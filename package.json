@@ -1,0 +1,25 @@
+{
+  "name": "voyager-performance",
+  "version": "1.0.0",
+  "description": "Perfomance testing repository for sync",
+  "main": "index.js",
+  "dependencies": {
+    "@aerogear/voyager-server": "^0.5.1",
+    "express": "^4.16.4",
+    "graphql": "^14.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aerogear/voyager-performance.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aerogear/voyager-performance/issues"
+  },
+  "homepage": "https://github.com/aerogear/voyager-performance#readme"
+}
