@@ -1,0 +1,17 @@
+{
+  "name": "voyager-features-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@aerogear/voyager-server": "^0.5.1",
+    "express": "^4.16.4",
+    "graphql": "^14.2.1"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "Apache-2.0"
+}
