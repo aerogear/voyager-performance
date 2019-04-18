@@ -40,6 +40,8 @@ type Mutation {
   createTask(task: CreateTaskInput!): Task
   updateTask(task: UpdateTaskInput!): Task
   deleteTask(id: ID!): ID
+
+  deleteAll: Boolean
 }
 
 input NestedInput {
@@ -204,6 +206,10 @@ const taskResolvers = {
       await context.db('test').delete().where('taskId', args.id)
 
       return result
+    },
+    deleteAll: async (obj, args, context, info) => {
+      await context.db('tasks').delete()
+      await context.db('test').delete()
     }
   }
 }
