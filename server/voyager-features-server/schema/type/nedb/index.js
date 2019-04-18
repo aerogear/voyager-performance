@@ -1,52 +1,15 @@
 const Datastore = require('nedb');
 const fs = require('fs');
-const { gql } = require('@aerogear/voyager-server');
 const { conflictHandler } = require('@aerogear/voyager-conflicts');
-const { pubSub } = require('../../subscriptions');
+const { pubSub } = require('../../../subscriptions');
+const { customResolutionStrategy } = require('../../conflicts');
 
-const db = new Datastore();
 const { CONFLICTS_RESOLUTION_TYPE } = process.env;
 
 const files = [];
 
-function customResolutionStrategy(serverState, clientState) {
-  return {
-    id: clientState.id,
-    title: `updated after conflict. title: ${serverState.title}-${clientState.title}`
-  };
-}
-
-const typeDefs = gql`
-  type Query {
-    hello: String
-    uploads: [File]
-    allTasks: [Task]
-  }
-  type Mutation {
-    createTask(title: String!, description: String): Task
-    updateTask(id: ID!, title: String!, description: String, version: Int!): Task
-    singleUpload(file: Upload!): File!
-    deleteTask(id: ID!): ID
-    deleteAllTasks: String
-  }
-  type File {
-    filename: String!
-    mimetype: String!
-    encoding: String!
-  }
-  type Task {
-    id: ID
-    title: String
-    description: String
-    version: Int
-  }
-  type Subscription {
-    taskCreated: Task
-  }
-`;
-
 const dbQuery = {
-  allTasks: () =>
+  allTasks: db =>
     new Promise((resolve, reject) => {
       db.find({}, (err, doc) => {
         if (err) {
@@ -56,7 +19,7 @@ const dbQuery = {
         }
       });
     }),
-  getTask: task =>
+  getTask: (db, task) =>
     new Promise((resolve, reject) => {
       db.findOne(task, (err, doc) => {
         if (err) {
@@ -66,7 +29,7 @@ const dbQuery = {
         }
       });
     }),
-  createTask: task =>
+  createTask: (db, task) =>
     new Promise((resolve, reject) => {
       db.insert(task, (err, doc) => {
         if (err) {
@@ -76,7 +39,7 @@ const dbQuery = {
         }
       });
     }),
-  updateTask: (taskToUpdate, updatedTask) =>
+  updateTask: (db, taskToUpdate, updatedTask) =>
     new Promise((resolve, reject) => {
       db.update(taskToUpdate, updatedTask, {}, (err, doc) => {
         if (err) {
@@ -86,7 +49,7 @@ const dbQuery = {
         }
       });
     }),
-  deleteTask: task =>
+  deleteTask: (db, task) =>
     new Promise((resolve, reject) => {
       db.remove(task, {}, (err, doc) => {
         if (err) {
@@ -96,7 +59,7 @@ const dbQuery = {
         }
       });
     }),
-  deleteAllTasks: () =>
+  deleteAllTasks: db =>
     new Promise((resolve, reject) => {
       db.remove({}, { multi: true }, (err, doc) => {
         if (err) {
@@ -112,17 +75,17 @@ const resolvers = {
   Query: {
     hello: () => `Hello world`,
     uploads: () => files,
-    allTasks: async () => {
-      const allTasks = await dbQuery.allTasks();
+    allTasks: async (obj, args, context) => {
+      const allTasks = await dbQuery.allTasks(context.db);
       return allTasks;
     }
   },
   Mutation: {
     createTask: async (obj, args, context, info) => {
-      const allTasks = await dbQuery.allTasks();
-      args.id = allTasks.length;
+      const allTasks = await dbQuery.allTasks(context.db);
+      args.id = allTasks.length + 1;
       args.version = 1;
-      await dbQuery.createTask(args);
+      await dbQuery.createTask(context.db, args);
       const result = {
         ...args,
         id: args.id.toString()
@@ -139,7 +102,7 @@ const resolvers = {
         description: clientData.description,
         version: clientData.version
       };
-      const taskToUpdate = await dbQuery.getTask({ id: args.id });
+      const taskToUpdate = await dbQuery.getTask(context.db, { id: args.id });
 
       if (CONFLICTS_RESOLUTION_TYPE !== undefined) {
         if (conflictHandler.hasConflict(taskToUpdate, args)) {
@@ -149,7 +112,7 @@ const resolvers = {
               taskToUpdate,
               args
             );
-            await dbQuery.updateTask(taskToUpdate, resolvedState);
+            await dbQuery.updateTask(context.db, taskToUpdate, resolvedState);
             return response;
           }
 
@@ -161,16 +124,16 @@ const resolvers = {
         conflictHandler.nextState(args);
       }
       // Persist the update to the database and return it to the client
-      await dbQuery.updateTask(taskToUpdate, args);
+      await dbQuery.updateTask(context.db, taskToUpdate, args);
       return args;
     },
     deleteTask: async (obj, clientData, context, info) => {
       const id = Number(clientData.id);
-      await dbQuery.deleteTask({ id });
+      await dbQuery.deleteTask(context.db, { id });
       return id;
     },
-    deleteAllTasks: async () => {
-      await dbQuery.deleteAllTasks();
+    deleteAllTasks: async (obj, clientData, context) => {
+      await dbQuery.deleteAllTasks(context.db);
       return 'All tasks are successfully deleted';
     },
     singleUpload: async (parent, { file }) => {
@@ -194,7 +157,11 @@ const resolvers = {
   }
 };
 
+async function connect() {
+  return new Datastore();
+}
+
 module.exports = {
   resolvers,
-  typeDefs
+  connect
 };

@@ -3,7 +3,7 @@ import { Trend } from 'k6/metrics';
 import { check, group } from 'k6';
 import { queryAllTasks, mutationCreateTask, mutationDeleteAllTasks } from './utils/queries.js';
 
-// Place GraphQL Server App URL here, e.g. https:/myapp.com/graphql
+// Place GraphQL Server App URL here, e.g. http://myapp.com/graphql
 const url = 'http://localhost:4000/graphql';
 const params = { headers: { 'Content-Type': 'application/json' } };
 
@@ -21,7 +21,7 @@ function getRandomTaskToUpdate(listOfTasks) {
 export function setup() {
   const payload = JSON.stringify(mutationCreateTask);
   // Create some tasks
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 100; i++) {
     http.post(url, payload, params);
   }
 }

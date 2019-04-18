@@ -16,19 +16,26 @@ const { KeycloakSecurityService } = require('@aerogear/voyager-keycloak');
 const keycloakConfigPath = process.env.KEYCLOAK_CONFIG || path.resolve(__dirname, './keycloak.json');
 
 const { subscriptionServer } = require('./subscriptions');
+const { typeDefs } = require('./schema');
 
-let typeDefs;
+let connect;
 let resolvers;
 let auditLogger;
 let metrics;
 let keycloakService;
 
-if (!DB_STORAGE_TYPE || DB_STORAGE_TYPE === 'nodb') {
-  console.log('No DB is used for storing data.');
-  ({ typeDefs, resolvers } = require('./schema').nodb);
+if (DB_STORAGE_TYPE === 'postgres') {
+  console.log('Postgres DB is used for storing data.');
+  ({ resolvers, connect } = require('./schema').postgres);
+} else if (DB_STORAGE_TYPE === 'mongodb') {
+  console.log('MongoDB is used for storing data.');
+  ({ resolvers, connect } = require('./schema').mongodb);
 } else if (DB_STORAGE_TYPE === 'nedb') {
   console.log('NeDB is used for storing data.');
-  ({ typeDefs, resolvers } = require('./schema').nedb);
+  ({ resolvers, connect } = require('./schema').nedb);
+} else {
+  console.log('No DB is used for storing data.');
+  ({ resolvers, connect } = require('./schema').nodb);
 }
 
 if (AUDIT_LOGGING_ENABLED === 'true') {
@@ -54,12 +61,17 @@ async function start() {
   // Connect the server to express
   const app = express();
   app.use(cors({ credentials: true }));
+  const client = await connect();
 
   // Initialize the library with your Graphql information
   const server = VoyagerServer(
     {
       typeDefs,
-      resolvers
+      resolvers,
+      context: async ({ req }) => ({
+        req,
+        db: client
+      })
     },
     {
       securityService: keycloakService,

@@ -2,7 +2,7 @@ import http from 'k6/http';
 import { check } from 'k6';
 import { queryAllTasks, mutationCreateTask, mutationDeleteAllTasks } from './utils/queries.js';
 
-// Place GraphQL Server App URL here, e.g. https:/myapp.com/graphql
+// Place GraphQL Server App URL here, e.g. http://myapp.com/graphql
 const url = 'http://localhost:4000/graphql';
 const params = { headers: { 'Content-Type': 'application/json' } };
 
@@ -24,12 +24,10 @@ export default function() {
 }
 
 export function teardown() {
-  setTimeout(() => {
-    const payload = JSON.stringify(mutationDeleteAllTasks);
-    const res = http.post(url, payload, params);
+  const payload = JSON.stringify(mutationDeleteAllTasks);
+  const res = http.post(url, payload, params);
 
-    check(res, {
-      'is status 200 after deleting all tasks': r => r.status === 200
-    });
-  }, 10000);
+  check(res, {
+    'is status 200 after deleting all tasks': r => r.status === 200
+  });
 }

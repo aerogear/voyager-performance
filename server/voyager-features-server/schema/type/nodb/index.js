@@ -1,48 +1,12 @@
 const fs = require('fs');
-const { pubSub } = require('../../subscriptions');
-const { gql } = require('@aerogear/voyager-server');
+const { pubSub } = require('../../../subscriptions');
 const { conflictHandler } = require('@aerogear/voyager-conflicts');
+const { customResolutionStrategy } = require('../../conflicts');
 
 const { CONFLICTS_RESOLUTION_TYPE } = process.env;
 
 let tasks = [];
-const files = [];
-
-function customResolutionStrategy(serverState, clientState) {
-  return {
-    id: clientState.id,
-    title: `updated after conflict. title: ${serverState.title}-${clientState.title}`
-  };
-}
-
-const typeDefs = gql`
-  type Query {
-    hello: String
-    uploads: [File]
-    allTasks: [Task]
-  }
-  type Mutation {
-    createTask(title: String!, description: String): Task
-    updateTask(id: ID!, title: String!, description: String, version: Int!): Task
-    singleUpload(file: Upload!): File!
-    deleteTask(id: ID!): ID
-    deleteAllTasks: String
-  }
-  type File {
-    filename: String!
-    mimetype: String!
-    encoding: String!
-  }
-  type Task {
-    id: ID
-    title: String
-    description: String
-    version: Int
-  }
-  type Subscription {
-    taskCreated: Task
-  }
-`;
+let files;
 
 // Create the resolvers for your schema
 const resolvers = {
@@ -130,7 +94,11 @@ const resolvers = {
   }
 };
 
+async function connect() {
+  return null;
+}
+
 module.exports = {
   resolvers,
-  typeDefs
+  connect
 };
