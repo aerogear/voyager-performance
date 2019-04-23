@@ -9,7 +9,7 @@ const options = {
   database: process.env.DB_NAME || 'tasks',
   user: process.env.DB_USERNAME || 'test',
   password: process.env.DB_PASSWORD || 'test',
-  host: process.env.DB_HOSTNAME || '127.0.0.1',
+  host: process.env.PGDB_HOSTNAME || '127.0.0.1',
   port: process.env.DB_PORT || '5432'
 };
 

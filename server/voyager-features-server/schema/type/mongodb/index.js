@@ -10,10 +10,10 @@ const files = [];
 
 const opt = {
   database: process.env.DB_NAME || 'tasks',
-  user: process.env.MONGODB_USER || 'test',
-  password: process.env.MONGODB_PASSWORD || 'test',
-  host: process.env.DB_HOSTNAME || '127.0.0.1',
-  port: process.env.DB_PORT || '27017'
+  user: process.env.DB_USERNAME || 'test',
+  password: process.env.DB_PASSWORD || 'test',
+  host: process.env.MONGODB_HOSTNAME || '127.0.0.1',
+  port: process.env.MONGODB_PORT || '27017'
 };
 
 async function connect() {

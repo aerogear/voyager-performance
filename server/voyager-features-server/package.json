@@ -16,6 +16,7 @@
     "knex": "^0.16.5",
     "mongodb": "^3.2.3",
     "nedb": "^1.8.0",
+    "pg": "^7.10.0",
     "subscriptions-transport-ws": "^0.9.16"
   },
   "scripts": {
