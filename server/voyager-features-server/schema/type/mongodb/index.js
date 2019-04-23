@@ -13,7 +13,7 @@ const opt = {
   user: process.env.DB_USERNAME || 'test',
   password: process.env.DB_PASSWORD || 'test',
   host: process.env.MONGODB_HOSTNAME || '127.0.0.1',
-  port: process.env.MONGODB_PORT || '27017'
+  port: process.env.DB_PORT || '27017'
 };
 
 async function connect() {

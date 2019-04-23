@@ -4,8 +4,11 @@ import { check, group } from 'k6';
 import { queryAllTasks, mutationCreateTask, mutationDeleteAllTasks } from './utils/queries.js';
 
 // Place GraphQL Server App URL here, e.g. http://myapp.com/graphql
-const url = 'http://localhost:4000/graphql';
-const params = { headers: { 'Content-Type': 'application/json' } };
+const url =
+  'https://sync-app-perf-testing-server-app-perf-testing-server.apps.psturc-a3a9.openshiftworkshop.com/graphql';
+// Place GraphQL Server App Bearer token here (if Keycloak is enabled). Get it from http://<your-app-url>.com/token
+const token = '';
+const params = { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } };
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);

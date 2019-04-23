@@ -80,8 +80,6 @@ async function start() {
     }
   );
 
-  server.applyMiddleware({ app });
-
   if (metrics) {
     metrics.applyMetricsMiddlewares(app, { path: '/metrics' });
   }
@@ -94,6 +92,8 @@ async function start() {
       keycloakService.applyAuthMiddleware(app, { tokenEndpoint: true });
     }
   }
+
+  server.applyMiddleware({ app });
 
   const httpServer = http.createServer(app);
   httpServer.listen(4000, () => {
