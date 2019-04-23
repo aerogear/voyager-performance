@@ -10,8 +10,6 @@ else
 	jq="jq"
 fi
 
-$jq --version
-exit 0
 # Fancy stuff
 green_text=$(tput setaf 2)
 normal_text=$(tput sgr0)
