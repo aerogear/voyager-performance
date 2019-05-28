@@ -63,10 +63,24 @@ async function start() {
   app.use(cors({ credentials: true }));
   const client = await connect();
 
+  if (KEYCLOAK_ENABLED === 'true') {
+    console.log('Keycloak is enabled');
+    const keycloakConfig = readConfig(keycloakConfigPath);
+    if (keycloakConfig) {
+      keycloakService = new KeycloakSecurityService(keycloakConfig);
+      keycloakService.applyAuthMiddleware(app, { tokenEndpoint: true });
+    }
+  }
+  const getTypeDefs = () => {
+    if (keycloakService) {
+      return [typeDefs, keycloakService.getTypeDefs()];
+    }
+    return typeDefs;
+  };
   // Initialize the library with your Graphql information
   const server = VoyagerServer(
     {
-      typeDefs,
+      typeDefs: getTypeDefs(),
       resolvers,
       context: async ({ req }) => ({
         req,
@@ -82,15 +96,6 @@ async function start() {
 
   if (metrics) {
     metrics.applyMetricsMiddlewares(app, { path: '/metrics' });
-  }
-
-  if (KEYCLOAK_ENABLED === 'true') {
-    console.log('Keycloak is enabled');
-    const keycloakConfig = readConfig(keycloakConfigPath);
-    if (keycloakConfig) {
-      keycloakService = new KeycloakSecurityService(keycloakConfig);
-      keycloakService.applyAuthMiddleware(app, { tokenEndpoint: true });
-    }
   }
 
   server.applyMiddleware({ app });

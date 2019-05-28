@@ -36,6 +36,7 @@ async function connect() {
 
 const resolvers = {
   Query: {
+    hello: () => `Hello world`,
     allTasks: async (obj, args, context) => {
       const result = context.db.select().from('tasks');
       if (args.first && args.after) {
