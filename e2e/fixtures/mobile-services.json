@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "namespace": "perf",
+  "clientId": "perf",
+  "services": [
+    {
+      "id": "81f67bae-7d40-11e9-afde-06799ee5f0b0",
+      "name": "sync-app-perf-perf",
+      "type": "sync-app",
+      "url": "http://bs-local.com:4000/graphql",
+      "config": {
+        "websocketUrl": "ws://bs-local.com:4000/graphql"
+      }
+    }
+  ]
+}
