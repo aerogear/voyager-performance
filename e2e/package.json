@@ -1,0 +1,20 @@
+{
+  "name": "perf-e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "prepare-showcase": "./scripts/prepare.sh",
+    "server": "./scripts/run-server.sh",
+    "test": "node ./src/test.js",
+    "network-log": "node ./src/network-log.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.24.0",
+    "node-fetch": "^2.6.0",
+    "webdriverio": "^5.9.1"
+  }
+}
