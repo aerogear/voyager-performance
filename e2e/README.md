@@ -9,13 +9,13 @@ This test uses ionic-showcase for tests.
 # Prerequisites
 
 - BrowserStack account
-- export BROWSERSTACK_USER env var
-- export BROWSERSTACK_KEY env var
+- `export BROWSERSTACK_USER=<BS_USER>`
+- `export BROWSERSTACK_KEY=<BS_KEY>`
 
 To build ionic-showcase also:
 
-- npm install -g cordova@8
-- npm install -g ionic@4
+- `npm install -g cordova@8`
+- `npm install -g ionic@4`
 
 Optional:
 
