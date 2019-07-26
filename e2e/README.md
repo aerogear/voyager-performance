@@ -14,8 +14,8 @@ This test uses ionic-showcase for tests.
 
 To build ionic-showcase also:
 
-- `npm install -g cordova@8`
-- `npm install -g ionic@4`
+- `npm install -g cordova`
+- `npm install -g ionic`
 
 Optional:
 
