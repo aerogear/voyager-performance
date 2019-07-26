@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Prerequisites:
-# - npm install -g cordova@8
-# - npm install -g ionic@4
+# - npm install -g cordova
+# - npm install -g ionic
 # - edit mobile-services.json
 # - BROWSERSTACK_USER env var
 # - BROWSERSTACK_KEY env var
