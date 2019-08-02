@@ -19,8 +19,8 @@ const opts = {
   hostname:'hub-cloud.browserstack.com',
   logLevel: 'error',
   capabilities: {
-    'os_version': '7.1',
-    'device': 'Google Pixel',
+    'os_version': '9.0',
+    'device': 'Google Pixel 3',
     'real_mobile': 'true',
     'project': 'AeroGear DataSync Performance Tests',
     'name': 'tests',
@@ -120,7 +120,7 @@ const test = async () => {
       const { voyeager, queries } =  window.aerogear;
 
       try {
-        await voyeager.apolloClient.offlineMutation({
+        await voyeager.apolloClient.offlineMutate({
           mutation: queries.ADD_TASK,
           variables: {
             'title': 'test',
@@ -129,7 +129,7 @@ const test = async () => {
             'status': 'OPEN'
           },
           updateQuery: queries.GET_TASKS,
-          typeName: 'Task'
+          returnType: 'Task'
         });
       } catch (error) {}
 
