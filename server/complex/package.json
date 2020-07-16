@@ -23,7 +23,7 @@
     "graphql-resolvers": "0.3.2",
     "graphql-tools": "4.0.4",
     "knex": "0.16.5",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "merge-graphql-schemas": "1.5.8",
     "nodemon": "1.18.11",
     "pg": "7.9.0",
