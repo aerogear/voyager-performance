@@ -21,7 +21,7 @@
     "@aerogear/voyager-client": "^2.4.0",
     "cordova-android": "^8.0.0",
     "cordova-browser": "^6.0.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0"
   },
   "devDependencies": {
